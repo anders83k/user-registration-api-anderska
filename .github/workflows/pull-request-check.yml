@@ -7,8 +7,8 @@ jobs:
   check-pull-request:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
-        uses: action/checkout@v4
+    - name: Check out repository
+      uses: action/checkout@v4
 
-      - name: Detect pull request
-        run: echo "Pull request detected!"
+    - name: Detect pull request
+      run: echo "Pull request detected!"
