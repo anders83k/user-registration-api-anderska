@@ -8,6 +8,6 @@ import static org.junit.Assert.assertEquals;
 class HelloWorldTest {
     @Test
     void additionIsCorrect() {
-          assertEquals( 4, 2 + 2);
+          assertEquals( 5, 2 + 2);
     }
 }
