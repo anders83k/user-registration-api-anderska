@@ -7,6 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class HelloWorldTest {
     @Test
     void additionIsCorrect() {
-        assertEquals(5, 2 + 2); //Ändrade till 5 för att prova
+        assertEquals(4, 2 + 2);
     }
 }
