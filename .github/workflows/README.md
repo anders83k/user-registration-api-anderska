@@ -12,3 +12,5 @@ med Learnpoint-övningarna:
 
 Radera inte den här filen förrän ni har lagt in era egna workflows — annars
 försvinner mappen helt ur Git (Git versionshanterar inte tomma mappar).
+
+Gör en test med branch condition.
