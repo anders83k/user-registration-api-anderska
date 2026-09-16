@@ -9,8 +9,8 @@ jobs:
   test:
     runs-on: ${{matrix.runner}}
     strategy:
-      fail-fast: false
-      matrix:
+      fail-fast: false  #med false; fortsätter även om en miljö man provar misslyckas
+      matrix:           #ser att det blir fel på alla system innan man börjar felsköka
        runner: [ubuntu-22.04, ubuntu-24.04]
 
     steps:
