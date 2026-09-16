@@ -26,7 +26,7 @@ jobs:
      - name: Gör maven körbar
        run: chmod +x ./mvnw
 
-     - name: Kör tester på ${{matrix-runner}}
+     - name: Kör tester på ${{matrix.runner}}
        run: .mvnw -B test
 
      - name: Ladda upp Surefire-rapporter
