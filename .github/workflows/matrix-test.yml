@@ -27,7 +27,7 @@ jobs:
        run: chmod +x ./mvnw
 
      - name: Kör tester på ${{matrix.runner}}
-       run: .mvnw -B test
+       run: ./mvnw -B test
 
      - name: Ladda upp Surefire-rapporter
        if: always()
