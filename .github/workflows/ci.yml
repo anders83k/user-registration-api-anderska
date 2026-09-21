@@ -29,3 +29,11 @@ jobs:
 
       - name: Kör tester
         run: ./mvnw -B test  #-B är: Automatiserat inte interaktivt, har ingen dialog med en människa. Vill ha körningen förutsägbar.
+
+      - name: Upload Surefire-Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: target/surefire-reports/
+          if-no-files-found: warn
