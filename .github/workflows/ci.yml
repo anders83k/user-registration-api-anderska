@@ -1,0 +1,31 @@
+name: CI - user-registration-api
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:  #ger oss en manuell knapp för när vi vill testa/felsöka en workflow. från action-fliken.
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Testa med Java 21  #Detta är ett testnamn, med bindestreck en del av en lista
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Hämta koden
+        uses: actions/checkout@v4
+
+      - name: Sätt upp Java 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Gör Maven Wrapper körbar
+        run: chod +x ./mvnw
+
+      - name: Kör tester
+        run: ./mvnw -B test  #-B är: Automatiserat inte interaktivt, har ingen dialog med en människa. Vill ha körningen förutsägbar.
