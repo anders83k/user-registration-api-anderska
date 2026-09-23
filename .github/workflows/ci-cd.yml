@@ -85,5 +85,5 @@ jobs:
         run:  #simulerar leveransen utan att påverka ett externt system med echo.
           echo "All tests passed on main"
           echo "Simulated deploy to staging"
-          ls-lh deploy
+          ls -lh deploy
           echo "a real deploy would use the security credentials of the environment"
