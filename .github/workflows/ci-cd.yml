@@ -4,19 +4,49 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+
 permissions:
-  contents: read  #denna rad är bra praxis, tillåter läsning utan att skriva tillbaka.
+  contents: read
 
 jobs:
   build:
-    name: Build JAR
+    name: Bygg JAR
     runs-on: ubuntu-latest
 
     steps:
       - name: Hämta koden
         uses: actions/checkout@v4
 
-      - name: Setup Java 21
+      - name: Sätt upp Java 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: temurin
+          cache: maven
+
+      - name: Gör Maven wrapper körbar
+        run: chmod +x ./mvnw
+
+      - name: Bygg applikationen utan att köra tester igen
+        run: ./mvnw -B -DskipTests clean package
+
+      - name: Ladda upp byggresultat
+        uses: actions/upload-artifact@v4
+        with:
+          name: user-registration-api-jar
+          path: target/user-registration-api-*.jar
+          if-no-files-found: error
+
+  test:
+    name: Kör automatiska tester
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Hämta koden
+        uses: actions/checkout@v4
+
+      - name: Sätt upp Java
         uses: actions/setup-java@v5
         with:
           java-version: '21'
@@ -26,64 +56,34 @@ jobs:
       - name: Gör Maven Wrapper körbar
         run: chmod +x ./mvnw
 
-      - name: Build application without running tests again
-        run: ./mvnw -B -DskipTests clean package #tar bort tidigare byggresultat från target (för deploy)
-#testet körs i senare skede, B är att den ej väntar på mänskig interaktion utan är helautomatisk.
-      - name: Ladda upp  byggresultat
+      - name: Kör tester
+        run: ./mvnw -B test
+
+      - name: Ladda upp Surefire-rappaorter
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: user-registration-api-jar
-          path: target/user-registration-api-*.jar #fil eller mapp som skapas från en runner. *betyder att allt innan * måste ingå i filnamnet.
-          if-no-files-found: error
-
-  test:
-    name: Run automatic tests # ett namn som ej är del av en lista med steps saknar bindestreck.
-    runs-on: ubuntu-latest
-    needs: build #needs build gör att testet behöver egen checkout, setup med mera, se koden nedan.
-
-    steps: # steps är plural, alltid lista med bindestreck före name.
-     - name: fetch code
-       uses: actions/checkout@v4
-
-     - name: Setup Java
-       uses: actions/setup-java@v5
-       with:
-         java-version: '21'
-         distribution: temurin
-         cache: maven
-
-     - name: Gör Maven körbar
-       run: chmod +x ./mvnw
-
-     - name: Run tests
-       run: ./mvnw -B test
-
-     - name: Upload Surefire reports
-       if: always()
-       uses: actions/upload-artifact@v4
-       with:
-         name: test-results
-         path: target/surefire-reports/
-         if-no-files-found: warn
-
+          name: test-results
+          path: target/surefire-reports/
+          if-no-files-found: warn
 
   deploy:
-    name: Simulated deploy to staging
+    name: Simulerad deploy till staging
     runs-on: ubuntu-latest
     needs: test
-    if: success()&&github.event_name=='push'&&github.ref=='refs/head/main'
-    environment: staging # kopplar jobbet till en namngiven miljö.
+    if: success() && github.event_name=='push'&&github.ref=='refs/heads/main'
+    environment: staging
 
     steps:
-      - name: Fetch buildresult
+      - name: Hämta byggresultatet
         uses: actions/download-artifact@v4
         with:
           name: user-registration-api-jar
           path: deploy
 
-      - name: Visa vad som skulle deployas  # | betyder kör flera terminalkommandon i samma step.
-        run: | #simulerar leveransen utan att påverka ett externt system med echo.
-          echo "All tests passed on main"
-          echo "Simulated deploy to staging"
+      - name: Visa vad som skulle deployas
+        run: |
+          echo "Alla tester är godkända på main"
+          echo "Simulerar deploy till staging"
           ls -lh deploy
-          echo "a real deploy would use the security credentials of the environment"
+          echo "En verklig deploy skulle använda miljöns säkra credentials"
