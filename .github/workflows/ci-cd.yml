@@ -82,7 +82,7 @@ jobs:
           path: deploy
 
       - name: Visa vad som skulle deployas
-        run:  #simulerar leveransen utan att påverka ett externt system med echo.
+        run:  | #simulerar leveransen utan att påverka ett externt system med echo.
           echo "All tests passed on main"
           echo "Simulated deploy to staging"
           ls -lh deploy
