@@ -65,3 +65,25 @@ jobs:
          name: test-results
          path: target/surefire-reports/
          if-no-files-found: warn
+
+
+  deploy:
+    name: Simulated deploy to staging
+    runs-on: ubuntu-latest
+    needs: test
+    if: success() && github.event_name == 'push' && github.ref=='refs/head/main'
+    environment: staging # kopplar jobbet till en namngiven miljö.
+
+    steps:
+      - name: Fetch buildresult
+        uses: actions/download-artifact@v4
+        with:
+          name: user-registration-api-jar
+          path: deploy
+
+      - name: Visa vad som skulle deployas
+        run:  #simulerar leveransen utan att påverka ett externt system med echo.
+          echo "All tests passed on main"
+          echo "Simulated deploy to staging"
+          ls-lh deploy
+          echo "a real deploy would use the security credentials of the environment"
