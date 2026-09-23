@@ -21,7 +21,7 @@ jobs:
         with:
           java-version: '21'
           distribution: temurin
-          cach: maven
+          cache: maven
 
       - name: Gör Maven Wrapper körbar
         run: chmod +x ./mvnw
@@ -71,7 +71,7 @@ jobs:
     name: Simulated deploy to staging
     runs-on: ubuntu-latest
     needs: test
-    if: success() && github.event_name == 'push' && github.ref=='refs/head/main'
+    if: success()&&github.event_name=='push'&&github.ref=='refs/head/main'
     environment: staging # kopplar jobbet till en namngiven miljö.
 
     steps:
