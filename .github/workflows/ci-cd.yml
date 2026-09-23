@@ -81,8 +81,8 @@ jobs:
           name: user-registration-api-jar
           path: deploy
 
-      - name: Visa vad som skulle deployas
-        run:  | #simulerar leveransen utan att påverka ett externt system med echo.
+      - name: Visa vad som skulle deployas  # | betyder kör flera terminalkommandon i samma step.
+        run: | #simulerar leveransen utan att påverka ett externt system med echo.
           echo "All tests passed on main"
           echo "Simulated deploy to staging"
           ls -lh deploy
